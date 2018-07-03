@@ -15,8 +15,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.QuickContactBadge;
 
+import com.bumptech.glide.Glide;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
 import tabian.com.instagramclone.Utils.ImageAdapter;
@@ -58,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity{
         mpProgressBar = (ProgressBar) findViewById(R.id.profileProgressBar);
         mpProgressBar.setVisibility(View.GONE);
 
+        setupProfileImage();
         setupBottomNavigationView();
         setupToolbar();
 
@@ -89,4 +92,9 @@ public class ProfileActivity extends AppCompatActivity{
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
     }
+
+    private void setupProfileImage(){
+
+        CircleImageView profilePhoto = findViewById(R.id.profile_image);
+        Glide.with(getApplicationContext()).load("https://www.androidcentral.com/sites/androidcentral.com/files/styles/xlarge/public/article_images/2016/08/ac-lloyd.jpg?itok=bb72IeLf").placeholder(R.drawable.ic_image_placeholder).crossFade(1000).into(profilePhoto);    }
 }

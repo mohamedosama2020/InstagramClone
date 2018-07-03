@@ -19,7 +19,7 @@ public class ImageAdapter extends ArrayAdapter {
     private LayoutInflater layoutInflater;
     private String[] imgURLs;
 
-    public ImageAdapter(Context context, String[] imgURLs) {
+    public ImageAdapter(Context context,String[] imgURLs) {
         super(context , R.layout.gridview_item_image , imgURLs);
 
         this.mContext = context;
@@ -35,7 +35,7 @@ public class ImageAdapter extends ArrayAdapter {
         {
             convertView = layoutInflater.inflate(R.layout.gridview_item_image,parent,false);
         }
-        Glide.with(mContext).load(imgURLs[position]).into((ImageView) convertView);
+        Glide.with(mContext).load(imgURLs[position]).placeholder(R.drawable.ic_image_placeholder).into((SquareImageView) convertView);
         return convertView;
     }
 }
