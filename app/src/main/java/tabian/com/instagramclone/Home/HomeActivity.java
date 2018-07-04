@@ -1,6 +1,8 @@
 package tabian.com.instagramclone.Home;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import tabian.com.instagramclone.Login.LoginActivity;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
 import tabian.com.instagramclone.Utils.SectionsPagerAdapter;
@@ -21,6 +27,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 0;
 
     private Context mContext = HomeActivity.this;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener maAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +36,11 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting.");
 
+        setupFirebaseAuth();
         setupBottomNavigationView();
         setupViewPager();
     }
+
 
     /**
      * Responsible for adding the 3 tabs: Camera, Home, Messages
@@ -63,5 +73,57 @@ public class HomeActivity extends AppCompatActivity {
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
+    }
+
+
+
+    // ****************************** FIRE BASE ********************************//
+
+    private void checkCureentUser(FirebaseUser user){
+        if(user == null)
+        {
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(mContext, "Logged In", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setupFirebaseAuth(){
+        Log.d(TAG, "setupFirebaseAuth: Setting Up.");
+        mAuth = FirebaseAuth.getInstance();
+        maAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mAuth.getCurrentUser();
+
+                checkCureentUser(user);
+                if(user != null) {
+                    Log.d(TAG, "onAuthStateChanged: Signed In" + user.getUid());
+                }
+                else {
+                    Log.d(TAG, "onAuthStateChanged: Signed Out");
+                }
+
+            }
+        };
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        mAuth.addAuthStateListener(maAuthListener);
+        checkCureentUser(mAuth.getCurrentUser());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(maAuthListener != null)
+            mAuth.removeAuthStateListener(maAuthListener);
     }
 }
