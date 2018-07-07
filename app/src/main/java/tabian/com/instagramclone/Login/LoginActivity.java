@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +20,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.w3c.dom.Text;
+
+import tabian.com.instagramclone.Home.HomeActivity;
 import tabian.com.instagramclone.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -78,9 +82,11 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
-                                        Toast.makeText(LoginActivity.this, "Authentication failed.",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, "Authentication Successful.",Toast.LENGTH_SHORT).show();
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         progressBar.setVisibility(View.GONE);
+                                        Intent intent = new Intent(LoginActivity.this , HomeActivity.class);
+                                        finish();
 
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -98,6 +104,25 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+        TextView linkSignUp = findViewById(R.id.link_signup);
+        linkSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: navigating to register activty");
+                Intent intent = new Intent(LoginActivity.this , RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+        /*
+        If The User Is Logged In Then Navigate to Home Activity
+         */
+        if (mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(LoginActivity.this , HomeActivity.class);
+            startActivity(intent);
+            finish();
+
+        }
     }
 
     // ****************************** FIRE BASE ********************************//
@@ -136,6 +161,5 @@ public class LoginActivity extends AppCompatActivity {
         if(maAuthListener != null)
             mAuth.removeAuthStateListener(maAuthListener);
     }
-
 }
 

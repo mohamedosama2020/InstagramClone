@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/inputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
             <EditText
-                android:id="@+id/input_username"
+                android:id="@+id/inputUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Full Name"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/inputPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"

@@ -84,6 +84,7 @@ public class HomeActivity extends AppCompatActivity {
         {
             Intent intent = new Intent(mContext, LoginActivity.class);
             startActivity(intent);
+            finish();
         }
         else
         {
@@ -117,7 +118,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         mAuth.addAuthStateListener(maAuthListener);
-        checkCureentUser(mAuth.getCurrentUser());
     }
 
     @Override
