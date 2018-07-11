@@ -138,17 +138,23 @@ public class RegisterActivity extends AppCompatActivity {
                             username = username + append;
 
 
-                            //add new user to databae
+                            //add new user to the database
+                            firebaseMethods.addNewUser(email, username, "", "", "");
+
+                            Toast.makeText(getApplicationContext(), "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
 
 
-                            //add new user_account_settings to database
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(), databaseError+"", Toast.LENGTH_SHORT).show();
 
                         }
                     });
+
+                    finish();
                 }
                 else {
                     Log.d(TAG, "onAuthStateChanged: Signed Out");

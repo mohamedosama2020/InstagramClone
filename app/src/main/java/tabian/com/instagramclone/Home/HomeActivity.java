@@ -88,7 +88,6 @@ public class HomeActivity extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(mContext, "Logged In", Toast.LENGTH_SHORT).show();
         }
     }
 

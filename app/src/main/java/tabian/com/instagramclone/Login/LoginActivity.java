@@ -79,14 +79,29 @@ public class LoginActivity extends AppCompatActivity {
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                    
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
-                                        Toast.makeText(LoginActivity.this, "Authentication Successful.",Toast.LENGTH_SHORT).show();
+                                        try{
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        progressBar.setVisibility(View.GONE);
-                                        Intent intent = new Intent(LoginActivity.this , HomeActivity.class);
-                                        finish();
+                                            if(user.isEmailVerified()){
+                                                Log.d(TAG, "onComplete: success email is verified");
+                                                Toast.makeText(LoginActivity.this, "Login Successful.",Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }else{
+                                                Toast.makeText(mContext, "Email Is Not Verified \n Check Your email inbox", Toast.LENGTH_SHORT).show();
+                                                progressBar.setVisibility(View.GONE);
+                                                mAuth.signOut();
+                                            }
+
+                                        }
+                                        catch (NullPointerException e){
+                                            Toast.makeText(mContext, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                        }
 
                                     } else {
                                         // If sign in fails, display a message to the user.

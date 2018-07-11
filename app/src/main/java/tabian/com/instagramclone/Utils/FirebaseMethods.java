@@ -11,8 +11,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import tabian.com.instagramclone.Models.User;
+import tabian.com.instagramclone.Models.UserAccountSettings;
+import tabian.com.instagramclone.R;
 
 public class FirebaseMethods {
 
@@ -21,6 +25,8 @@ public class FirebaseMethods {
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener maAuthListener;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference myRef;
 
     private Context mContext;
     private String userID;
@@ -28,6 +34,8 @@ public class FirebaseMethods {
     public FirebaseMethods(Context context) {
         mAuth = FirebaseAuth.getInstance();
         mContext = context;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
 
         if (mAuth.getCurrentUser() != null){
             userID = mAuth.getCurrentUser().getUid();
@@ -38,7 +46,7 @@ public class FirebaseMethods {
     public boolean  checkIfUsernameExists(String username , DataSnapshot dataSnapshot){
         Log.d(TAG, "checkIfUsernameExists:  checking if "+username+" alreaady exists");
         User user = new User();
-        for (DataSnapshot ds:dataSnapshot.getChildren()){
+        for (DataSnapshot ds:dataSnapshot.child(userID).getChildren()){
             Log.d(TAG, "checkIfUsernameExists: datasnoapshot : "+ds);
             user.setUsername(ds.getValue(User.class).getUsername());
 
@@ -50,6 +58,42 @@ public class FirebaseMethods {
 
         }
         return false;
+
+    }
+
+    /**
+     * Add Information of user node
+     * Add Information of user_account_settings node
+     * @param email
+     * @param username
+     * @param description
+     * @param website
+     * @param profile_photo
+     */
+
+    public void addNewUser(String email, String username, String description, String website, String profile_photo){
+
+        User user = new User( userID,  1,  email,  StringManipulation.condenseUsername(username) );
+
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(userID)
+                .setValue(user);
+
+
+        UserAccountSettings settings = new UserAccountSettings(
+                description,
+                username,
+                0,
+                0,
+                0,
+                profile_photo,
+                username,
+                website
+        );
+
+        myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                .child(userID)
+                .setValue(settings);
 
     }
 
@@ -69,6 +113,7 @@ public class FirebaseMethods {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             userID = user.getUid();
+                            sendVerificationEmail();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -82,4 +127,25 @@ public class FirebaseMethods {
 
 
     }
+
+    public void sendVerificationEmail(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null){
+
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+
+                    }else
+                    {
+                        Toast.makeText(mContext, "Couldn't send verification email..", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            });
+        }
+    }
+
+
 }
