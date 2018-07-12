@@ -136,6 +136,7 @@ public class FirebaseMethods {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
+                        Toast.makeText(mContext, "Check Your Email To Verify Your Account..", Toast.LENGTH_SHORT).show();
 
                     }else
                     {

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,6 +18,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import tabian.com.instagramclone.Login.LoginActivity;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
+import tabian.com.instagramclone.Utils.FirebaseMethods;
 import tabian.com.instagramclone.Utils.SectionsPagerAdapter;
 
 public class HomeActivity extends AppCompatActivity {
@@ -79,7 +79,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // ****************************** FIRE BASE ********************************//
 
-    private void checkCureentUser(FirebaseUser user){
+    private void checkCurrentUser(FirebaseUser user){
         if(user == null)
         {
             Intent intent = new Intent(mContext, LoginActivity.class);
@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                checkCureentUser(user);
+                checkCurrentUser(user);
                 if(user != null) {
                     Log.d(TAG, "onAuthStateChanged: Signed In" + user.getUid());
                 }
@@ -117,10 +117,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         mAuth.addAuthStateListener(maAuthListener);
+        checkCurrentUser(mAuth.getCurrentUser());
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if(maAuthListener != null)
             mAuth.removeAuthStateListener(maAuthListener);
