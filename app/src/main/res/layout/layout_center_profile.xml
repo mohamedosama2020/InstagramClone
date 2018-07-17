@@ -7,15 +7,6 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <!--**************** Top Toolbar ************** -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/relLayout1">
-
-            <include layout="@layout/snippet_top_prolfilebar"/>
-        </RelativeLayout>
-
 
         <!--**************** Middle Section ************** -->
         <RelativeLayout
@@ -81,7 +72,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/descripttion"
+                    android:id="@+id/description"
                     android:textColor="@color/black"
                     android:text="I live in Egypt,Cairo"
                     android:layout_marginTop="5dp"
