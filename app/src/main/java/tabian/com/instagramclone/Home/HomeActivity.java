@@ -27,6 +27,8 @@ public class HomeActivity extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 0;
 
     private Context mContext = HomeActivity.this;
+
+    //fierbase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener maAuthListener;
 

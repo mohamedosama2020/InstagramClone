@@ -20,15 +20,35 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import tabian.com.instagramclone.Login.LoginActivity;
+import tabian.com.instagramclone.Models.User;
+import tabian.com.instagramclone.Models.UserAccountSettings;
+import tabian.com.instagramclone.Models.UserSettings;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
+import tabian.com.instagramclone.Utils.FirebaseMethods;
 
 public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
     private static final int ACTIVITY_NUM = 4;
+
+    //fierbase
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener maAuthListener;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
     private Context mContext;
 
@@ -60,11 +80,35 @@ public class ProfileFragment extends Fragment {
          bottomNavigationView = view.findViewById(R.id.bottomNavViewBar);
 
          mContext = getActivity();
+         mFirebaseMethods = new FirebaseMethods(getActivity());
 
          setupBottomNavigationView();
          setupToolbar();
+         setupFirebaseAuth();
+
+
          return view;
     }
+
+    private void setProfileWidgets(UserSettings userSettings){
+        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieving from firebase database: "+userSettings.toString());
+
+        //User user = userSettings.getUser();
+        UserAccountSettings settings = userSettings.getSettings();
+        Glide.with(getActivity()).load(settings.getProfile_photo()).into(mProfilePhoto);
+        mDisplayName.setText(settings.getDisplay_name());
+        mUsername.setText(settings.getUsername());
+        mWebsite.setText(settings.getWebsite());
+        mDescription.setText(settings.getDescription());
+        mPosts.setText(String.valueOf(settings.getPosts()));
+        mFollowers.setText(String.valueOf(settings.getFollowers()));
+        mFollowing.setText(String.valueOf(settings.getFollowing()));
+        mProgressBar.setVisibility(View.GONE);
+
+
+    }
+
+
 
         /**
      * BottomNavigationView setup
@@ -79,7 +123,7 @@ public class ProfileFragment extends Fragment {
     }
 
         private void setupToolbar(){
-            ((ProfileActivity)getActivity()).setSupportActionBar(toolbar);
+        ((ProfileActivity)getActivity()).setSupportActionBar(toolbar);
         profileMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,5 +131,60 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    // ****************************** FIRE BASE ********************************//
+
+    private void setupFirebaseAuth(){
+        Log.d(TAG, "setupFirebaseAuth: Setting Up.");
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
+
+        maAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mAuth.getCurrentUser();
+
+                if(user != null) {
+                    Log.d(TAG, "onAuthStateChanged: Signed In" + user.getUid());
+                }
+                else {
+                    Log.d(TAG, "onAuthStateChanged: Signed Out");
+                }
+
+            }
+        };
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                //retrieve user information from database
+                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
+
+
+                //retrieve Images for the user in question
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        mAuth.addAuthStateListener(maAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(maAuthListener != null)
+            mAuth.removeAuthStateListener(maAuthListener);
     }
 }
