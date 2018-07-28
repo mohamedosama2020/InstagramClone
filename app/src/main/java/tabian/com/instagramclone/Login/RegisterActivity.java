@@ -18,8 +18,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import tabian.com.instagramclone.Models.User;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.FirebaseMethods;
 
@@ -129,21 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
                     myref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            // first check username is not already in use
-
-                            if(firebaseMethods.checkIfUsernameExists(username,dataSnapshot)){
-                                append = myref.push().getKey().substring(3,10);
-                                Log.d(TAG, "onDataChange: Username Exists! Appending random string to name: " +append );
-                            }
-                            username = username + append;
-
-
-                            //add new user to the database
-                            firebaseMethods.addNewUser(email, username, "", "", "");
-
-                            Toast.makeText(getApplicationContext(), "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
-                            mAuth.signOut();
-
+                            checkIfUserNameExist(username);
 
                         }
 
@@ -162,6 +150,46 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         };
+
+    }
+
+    private void checkIfUserNameExist(final String username) {
+        Log.d(TAG, "checkIfUserNameExist: Checking If: " + username + " already exist ");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(getString(R.string.dbname_users))
+                .orderByChild(getString(R.string.field_username))
+                .equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot singleSnapShot:dataSnapshot.getChildren()){
+                    if (singleSnapShot.exists()){
+                        Log.d(TAG, "checkIfUserNameExist: Found A Match: " + singleSnapShot.getValue(User.class).getUsername());
+                        append = myref.push().getKey().substring(3,10);
+                        Log.d(TAG, "onDataChange: Username Exists! Appending random string to name: " +append );
+                    }
+                }
+                String mUsername;
+                mUsername = username + append;
+
+
+                //add new user to the database
+                firebaseMethods.addNewUser(email, mUsername, "", "", "");
+
+                Toast.makeText(getApplicationContext(), "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 

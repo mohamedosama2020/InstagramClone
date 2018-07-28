@@ -43,24 +43,40 @@ public class FirebaseMethods {
         }
     }
 
+    public void updateUsername(String username){
 
-    public boolean  checkIfUsernameExists(String username , DataSnapshot dataSnapshot){
-        Log.d(TAG, "checkIfUsernameExists:  checking if "+username+" alreaady exists");
-        User user = new User();
-        for (DataSnapshot ds:dataSnapshot.child(userID).getChildren()){
-            Log.d(TAG, "checkIfUsernameExists: datasnoapshot : "+ds);
-            user.setUsername(ds.getValue(User.class).getUsername());
+        Log.d(TAG, "updateUsername: updating username to " + username);
 
-            if (StringManuplation.expandUsername((user.getUsername())).equals(username)){
-                Log.d(TAG, "checkIfUsernameExists: Found A Match" + user.getUsername());
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(userID)
+                .child(mContext.getString(R.string.field_username))
+                .setValue(username);
 
-                return true;
-            }
-
-        }
-        return false;
-
+        myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                .child(userID)
+                .child(mContext.getString(R.string.field_username))
+                .setValue(username);
+        Toast.makeText(mContext, "Saved Changes", Toast.LENGTH_SHORT).show();
     }
+
+
+//    public boolean  checkIfUsernameExists(String username , DataSnapshot dataSnapshot){
+//        Log.d(TAG, "checkIfUsernameExists:  checking if "+username+" alreaady exists");
+//        User user = new User();
+//        for (DataSnapshot ds:dataSnapshot.child(userID).getChildren()){
+//            Log.d(TAG, "checkIfUsernameExists: datasnoapshot : "+ds);
+//            user.setUsername(ds.getValue(User.class).getUsername());
+//
+//            if (StringManuplation.expandUsername((user.getUsername())).equals(username)){
+//                Log.d(TAG, "checkIfUsernameExists: Found A Match" + user.getUsername());
+//
+//                return true;
+//            }
+//
+//        }
+//        return false;
+//
+//    }
 
     /**
      * Add Information of user node
@@ -166,11 +182,11 @@ public class FirebaseMethods {
         for(DataSnapshot ds: dataSnapshot.getChildren()){
 
             //user_account_settings node
-            if (ds.getKey().equals(mContext.getString(R.string.dbname_user_account_settings))){
-                Log.d(TAG, "getUserAccountSettings: datasnapshot: = "+ds);
+            if (ds.getKey().equals(mContext.getString(R.string.dbname_user_account_settings))) {
+                Log.d(TAG, "getUserAccountSettings: datasnapshot: = " + ds);
 
 
-                try{
+                try {
 
                     settings.setDisplay_name(ds.child(userID).getValue(UserAccountSettings.class).getDisplay_name());
                     settings.setUsername(ds.child(userID).getValue(UserAccountSettings.class).getUsername());
@@ -181,14 +197,13 @@ public class FirebaseMethods {
                     settings.setFollowers(ds.child(userID).getValue(UserAccountSettings.class).getFollowers());
                     settings.setFollowing(ds.child(userID).getValue(UserAccountSettings.class).getFollowing());
 
-                    Log.d(TAG, "getUserAccountSettings: retrieved user_account_settings information : "+settings.toString());
+                    Log.d(TAG, "getUserAccountSettings: retrieved user_account_settings information : " + settings.toString());
 
 
-
-                }catch ( NullPointerException e){
-                    Log.e(TAG, "getUserAccountSettings: NullPointerException"+e.getMessage() );
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "getUserAccountSettings: NullPointerException" + e.getMessage());
                 }
-
+            }
 
                 //user_account_settings node
                 if (ds.getKey().equals(mContext.getString(R.string.dbname_users))) {
@@ -206,7 +221,7 @@ public class FirebaseMethods {
 
 
 
-            }
+
         }
         return new UserSettings(user,settings);
 

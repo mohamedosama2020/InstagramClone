@@ -30,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import org.w3c.dom.Text;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import tabian.com.instagramclone.Login.LoginActivity;
 import tabian.com.instagramclone.Models.User;
@@ -78,6 +80,16 @@ public class ProfileFragment extends Fragment {
          toolbar = view.findViewById(R.id.profileToolBar);
          profileMenu = view.findViewById(R.id.profile_menu);
          bottomNavigationView = view.findViewById(R.id.bottomNavViewBar);
+         TextView mEditProfile = view.findViewById(R.id.textEditProfile);
+         mEditProfile.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Log.d(TAG, "onClick: Nvaigation To Edit Profile Fragment");
+                 Intent intent = new Intent(getActivity(),AccountSettingsActivity.class);
+                 intent.putExtra(getString(R.string.calling_activity),getString(R.string.profile_fragment));
+                 startActivity(intent);
+             }
+         });
 
          mContext = getActivity();
          mFirebaseMethods = new FirebaseMethods(getActivity());
