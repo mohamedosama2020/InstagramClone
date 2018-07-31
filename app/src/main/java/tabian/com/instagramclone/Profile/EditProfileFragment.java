@@ -1,11 +1,11 @@
 package tabian.com.instagramclone.Profile;
 
-import android.graphics.drawable.TransitionDrawable;
+
+
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.transition.Transition;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,15 +24,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import tabian.com.instagramclone.Dialogs.ConfirmPasswordDialog;
 import tabian.com.instagramclone.Models.User;
 import tabian.com.instagramclone.Models.UserAccountSettings;
 import tabian.com.instagramclone.Models.UserSettings;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.FirebaseMethods;
-import tabian.com.instagramclone.Utils.UniversalImageLoader;
 
 public class EditProfileFragment extends Fragment {
     private static final String TAG = "EditProfileFragment";
@@ -101,32 +99,30 @@ public class EditProfileFragment extends Fragment {
         final String email = mEmail.getText().toString();
         final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            //case 1: if the user made a change to username
+
+            if(!mUserSettings.getUser().getUsername().equals(username)){
+
+                checkIfUserNameExist(username);
+            }
+            //case 2: if the user made changes to their email
+            if(!mUserSettings.getUser().getEmail().equals(email)){
+
+                //step 1 : Re-Authinticate
+                //          -Confirm the password and email
+                ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+                dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
 
 
 
-                //case 1: the user did not change username
+                //step 2 :  check if the email is already registerd
+                //           -FetchProvidersForEmail(String email)
+                //step 3 : change the email
+                //          -Submit the new email to the database and authentication
 
-                if(!mUserSettings.getUser().getUsername().equals(username)){
-
-                    checkIfUserNameExist(username);
-                }
-                //case 2: the user changer username therefore we need to check for uniqueness
-                else{
-
-
-                }
 
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 

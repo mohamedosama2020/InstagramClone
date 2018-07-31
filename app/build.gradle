@@ -32,12 +32,6 @@ dependencies {
     //Design library for Coordinator Layout and Toolbars
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    //BottomNavigationViewEx library
-    implementation 'com.github.ittianyu:BottomNavigationViewEx:1.1.9'
-
-    //Universal ImageLoader Library
-    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
     //Glide Library
     implementation 'com.github.bumptech.glide:glide:3.5.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'

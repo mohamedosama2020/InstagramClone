@@ -7,7 +7,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import tabian.com.instagramclone.Home.HomeActivity;
 import tabian.com.instagramclone.Likes.LikesActivity;

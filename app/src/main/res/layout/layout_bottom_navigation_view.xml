@@ -6,7 +6,7 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true">
 
-        <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+        <tabian.com.instagramclone.Utils.BottomNavigationViewEx
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/bottomNavViewBar"
@@ -14,7 +14,7 @@
             app:menu="@menu/bottom_navigation_menu">
 
 
-        </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
+        </tabian.com.instagramclone.Utils.BottomNavigationViewEx>
 
     </RelativeLayout>
 

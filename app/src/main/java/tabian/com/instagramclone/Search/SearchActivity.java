@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import tabian.com.instagramclone.R;
+import tabian.com.instagramclone.Utils.BottomNavigationViewEx;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
 
 /**

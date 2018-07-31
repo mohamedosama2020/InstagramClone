@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.QuickContactBadge;
 
 import com.bumptech.glide.Glide;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import tabian.com.instagramclone.R;

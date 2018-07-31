@@ -13,10 +13,10 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import tabian.com.instagramclone.Login.LoginActivity;
 import tabian.com.instagramclone.R;
+import tabian.com.instagramclone.Utils.BottomNavigationViewEx;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
 import tabian.com.instagramclone.Utils.FirebaseMethods;
 import tabian.com.instagramclone.Utils.SectionsPagerAdapter;
