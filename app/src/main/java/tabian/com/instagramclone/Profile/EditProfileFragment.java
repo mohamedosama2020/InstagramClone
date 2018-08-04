@@ -16,8 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,8 +39,68 @@ import tabian.com.instagramclone.Models.UserSettings;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.FirebaseMethods;
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements ConfirmPasswordDialog.OnConfirmPassowrdListener {
     private static final String TAG = "EditProfileFragment";
+
+    @Override
+    public void onConfirmPassword(String password) {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        AuthCredential credential = EmailAuthProvider.getCredential(mAuth.getCurrentUser().getEmail(),password);
+        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: Re-Authenticated ^_^");
+
+
+
+                    ////////////////////////////// Check to see if the email is not already present in database
+                    mAuth.fetchProvidersForEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+
+                            if(task.isSuccessful()){
+                                try{
+                                    if(task.getResult().getProviders().size() == 1){
+                                        Log.d(TAG, "onComplete: That Email is Already In Use");
+                                        Toast.makeText(getActivity(), "That Email is Already In Use", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Log.d(TAG, "onComplete: That Email is Available");
+
+                                        //////////////////////// the email is available so update it
+                                        user.updateEmail(mEmail.getText().toString())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Toast.makeText(getActivity(), "Updated Email Succeccfully", Toast.LENGTH_SHORT).show();
+                                                    mFirebaseMethods.updateEmail(mEmail.getText().toString());
+
+                                                }
+
+                                            }
+                                        });
+                                    }
+                                }
+                                catch(NullPointerException e){
+                                    Log.d(TAG, "onComplete: NullPointerException" + e.getMessage());
+                                }
+                            }
+                        }
+                    });
+
+
+
+
+
+                }else{
+                    Log.d(TAG, "onComplete: Authentication Faild :(");
+                }
+            }
+        });
+
+    }
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener maAuthListener;
@@ -53,7 +119,7 @@ public class EditProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_editprofile, container, false);
-        mprofileImageView = (CircleImageView) view.findViewById(R.id.profile_photo);
+        mprofileImageView = view.findViewById(R.id.profile_photo);
         mDisplayName = view.findViewById(R.id.display_name);
         mUsername =  view.findViewById(R.id.username);
         mWebsite = view.findViewById(R.id.website);
@@ -113,6 +179,7 @@ public class EditProfileFragment extends Fragment {
                 //          -Confirm the password and email
                 ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
                 dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+                dialog.setTargetFragment(EditProfileFragment.this,1);
 
 
 
@@ -124,7 +191,26 @@ public class EditProfileFragment extends Fragment {
 
             }
 
-    }
+            // Change the rest of settings that don't require  uniqueness
+            if(!mUserSettings.getSettings().getDisplay_name().equals(displayName)){
+                //Update Display Name
+                mFirebaseMethods.updateUserAcccountSettings(displayName,null,null);
+
+            }
+            if(!mUserSettings.getSettings().getWebsite().equals(website)){
+                //Update Website
+                mFirebaseMethods.updateUserAcccountSettings(null,website,null);
+
+
+            }
+            if(!mUserSettings.getSettings().getDescription().equals(description)){
+                //Update Description
+                mFirebaseMethods.updateUserAcccountSettings(null,null,description);
+
+
+            }
+
+        }
 
     /**
      * check if username already in database
@@ -235,5 +321,6 @@ public class EditProfileFragment extends Fragment {
         if(maAuthListener != null)
             mAuth.removeAuthStateListener(maAuthListener);
     }
+
 
 }

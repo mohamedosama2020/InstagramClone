@@ -43,6 +43,45 @@ public class FirebaseMethods {
         }
     }
 
+
+    /**
+     * Update "user_account_settings" node for the current user
+     * @param displayName
+     * @param website
+     * @param description
+     */
+    public void updateUserAcccountSettings(String displayName , String website , String description){
+
+        Log.d(TAG, "updateUserAcccountSettings: Updating UserAccountSettings");
+        if (displayName != null){
+            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_display_name))
+                    .setValue(displayName);
+        }
+
+        if (website != null)
+        {
+            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_website))
+                    .setValue(website);
+        }
+
+        if (description != null){
+            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                    .child(userID)
+                    .child(mContext.getString(R.string.field_description))
+                    .setValue(description);
+        }
+
+    }
+
+
+    /**
+     * Update username in the "Users" and "account_account_settings" nodes
+     * @param username
+     */
     public void updateUsername(String username){
 
         Log.d(TAG, "updateUsername: updating username to " + username);
@@ -57,6 +96,21 @@ public class FirebaseMethods {
                 .child(mContext.getString(R.string.field_username))
                 .setValue(username);
         Toast.makeText(mContext, "Saved Changes", Toast.LENGTH_SHORT).show();
+    }
+
+
+    /**
+     * Update the Email in the "users" node
+     * @param email
+     */
+    public void updateEmail(String email){
+
+        Log.d(TAG, "updateUsername: updating email to " + email);
+
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(userID)
+                .child(mContext.getString(R.string.field_email))
+                .setValue(email);
     }
 
 
