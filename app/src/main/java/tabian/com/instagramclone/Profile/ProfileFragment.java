@@ -103,7 +103,6 @@ public class ProfileFragment extends Fragment {
     private void setProfileWidgets(UserSettings userSettings){
         Log.d(TAG, "setProfileWidgets: setting widgets with data retrieving from firebase database: "+userSettings.toString());
 
-        //User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
         Glide.with(getActivity()).load(settings.getProfile_photo()).into(mProfilePhoto);
         mDisplayName.setText(settings.getDisplay_name());

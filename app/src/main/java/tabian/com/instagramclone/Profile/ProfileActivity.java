@@ -56,15 +56,6 @@ public class ProfileActivity extends AppCompatActivity{
         setContentView(R.layout.activity_profile);
         Log.d(TAG, "onCreate: started.");
 
-//        gridView = findViewById(R.id.gridView);
-//        mpProgressBar = (ProgressBar) findViewById(R.id.profileProgressBar);
-//        mpProgressBar.setVisibility(View.GONE);
-//
-//        setupProfileImage();
-//        setupBottomNavigationView();
-//        setupToolbar();
-//
-//        gridView.setAdapter(new ImageAdapter(this,imgURLs));
         init();
     }
 
