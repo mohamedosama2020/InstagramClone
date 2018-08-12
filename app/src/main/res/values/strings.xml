@@ -10,6 +10,8 @@
     <string name="field_description">description</string>
     <string name="field_phone_number">phone_number</string>
     <string name="field_email">email</string>
+    <string name="dbname_photos">photos</string>
+    <string name="dbname_user_photos">user_photos</string>
 
 
 
@@ -18,6 +20,10 @@
     <string name="edit_profile_fragment">EditProfileFragment</string>
     <string name="sign_out_fragment">SignOutFragment</string>
     <string name="profile_fragment">Profile</string>
+
+    <!-- Photo Types -->
+    <string name="new_photo">new_photo</string>
+    <string name="profile_photo">profile_photo</string>
 
 
     <!-- Dialog names -->
