@@ -23,7 +23,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
+import tabian.com.instagramclone.Models.Photo;
 import tabian.com.instagramclone.Models.User;
 import tabian.com.instagramclone.Models.UserAccountSettings;
 import tabian.com.instagramclone.Models.UserSettings;
@@ -59,7 +64,7 @@ public class FirebaseMethods {
 
 
 
-    public void uploadNewPhoto(String photoType, String caption, int imgCount, String imgUrl) {
+    public void uploadNewPhoto(String photoType, final String caption, int imgCount, final String imgUrl) {
 
         Log.d(TAG, "uploadNewPhoto: Attemping to upload photo.");
 
@@ -91,6 +96,7 @@ public class FirebaseMethods {
 
                     // add the new photo to "photo"  node and "user_photos" node
 
+                    addPhotoToDatabase(caption , firebaseUrl.toString());
 
                     //navigate to the main feed so the user can see their photo
 
@@ -128,6 +134,35 @@ public class FirebaseMethods {
 
     }
 
+
+    private String getTimeStamp(){
+
+        SimpleDateFormat  sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
+        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));
+        return sdf.format(new Date());
+    }
+    
+    private void addPhotoToDatabase(String caption, String firebaseUrl) {
+        Log.d(TAG, "addPhotoToDatabase: adding photo to database");
+
+        String tags = StringManipulation.getTags(caption);
+        String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_photos)).push().getKey();
+        Photo photo = new Photo();
+        photo.setCaption(caption);
+        photo.setDate_created(getTimeStamp());
+        photo.setImage_path(firebaseUrl);
+        photo.setTags(tags);
+        photo.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        photo.setPhoto_id(newPhotoKey);
+
+        //insert into database
+        myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(newPhotoKey)
+                .setValue(photo);
+
+        myRef.child(mContext.getString(R.string.dbname_photos)).child(newPhotoKey).setValue(photo);
+    }
 
 
     public int getImgCount(DataSnapshot dataSnapshot){
@@ -212,23 +247,6 @@ public class FirebaseMethods {
     }
 
 
-//    public boolean  checkIfUsernameExists(String username , DataSnapshot dataSnapshot){
-//        Log.d(TAG, "checkIfUsernameExists:  checking if "+username+" alreaady exists");
-//        User user = new User();
-//        for (DataSnapshot ds:dataSnapshot.child(userID).getChildren()){
-//            Log.d(TAG, "checkIfUsernameExists: datasnoapshot : "+ds);
-//            user.setUsername(ds.getValue(User.class).getUsername());
-//
-//            if (StringManuplation.expandUsername((user.getUsername())).equals(username)){
-//                Log.d(TAG, "checkIfUsernameExists: Found A Match" + user.getUsername());
-//
-//                return true;
-//            }
-//
-//        }
-//        return false;
-//
-//    }
 
     /**
      * Add Information of user node

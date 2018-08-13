@@ -2,10 +2,11 @@ package tabian.com.instagramclone.Models;
 
 public class Photo {
 
-    private String description;
+    private String caption;
     private String date_created;
     private String image_path;
     private String photo_id;
+    private String user_id;
     private String tags;
 
 
@@ -14,20 +15,28 @@ public class Photo {
     }
 
 
-    public Photo(String description, String date_created, String image_path, String photo_id, String tags) {
-        this.description = description;
+    public Photo(String date_created, String image_path, String photo_id, String tags) {
         this.date_created = date_created;
         this.image_path = image_path;
         this.photo_id = photo_id;
         this.tags = tags;
     }
 
-    public String getDescription() {
-        return description;
+
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
     }
 
     public String getDate_created() {
@@ -65,7 +74,6 @@ public class Photo {
     @Override
     public String toString() {
         return "Photo{" +
-                "description='" + description + '\'' +
                 ", date_created='" + date_created + '\'' +
                 ", image_path='" + image_path + '\'' +
                 ", photo_id='" + photo_id + '\'' +
