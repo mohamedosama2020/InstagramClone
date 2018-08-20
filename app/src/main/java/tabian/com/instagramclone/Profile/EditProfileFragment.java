@@ -2,6 +2,7 @@ package tabian.com.instagramclone.Profile;
 
 
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ import tabian.com.instagramclone.Models.User;
 import tabian.com.instagramclone.Models.UserAccountSettings;
 import tabian.com.instagramclone.Models.UserSettings;
 import tabian.com.instagramclone.R;
+import tabian.com.instagramclone.Share.ShareActivity;
 import tabian.com.instagramclone.Utils.FirebaseMethods;
 
 public class EditProfileFragment extends Fragment implements ConfirmPasswordDialog.OnConfirmPassowrdListener {
@@ -261,6 +263,17 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         mDescription.setText(settings.getDescription());
         mEmail.setText(userSettings.getUser().getEmail());
         mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
+
+        mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: Changing Profile Photo");
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
     }
 

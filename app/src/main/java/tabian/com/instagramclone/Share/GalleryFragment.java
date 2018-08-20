@@ -23,6 +23,7 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
+import tabian.com.instagramclone.Profile.AccountSettingsActivity;
 import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.FilePaths;
 import tabian.com.instagramclone.Utils.FileSearch;
@@ -81,9 +82,18 @@ public class GalleryFragment extends Fragment {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: navigating to the final share screen");
 
-                Intent intent = new Intent(getActivity(),NextActivity.class);
-                intent.putExtra(getString(R.string.selected_image),mSelectedImage);
-                startActivity(intent);
+                if(isRootTask()){
+                    Intent intent = new Intent(getActivity(),NextActivity.class);
+                    intent.putExtra(getString(R.string.selected_image),mSelectedImage);
+                    startActivity(intent);
+                }else
+                {
+                    Intent intent = new Intent(getActivity(),AccountSettingsActivity.class);
+                    intent.putExtra(getString(R.string.selected_image),mSelectedImage);
+                    intent.putExtra(getString(R.string.return_to_fragment),getString(R.string.edit_profile_fragment));
+                    startActivity(intent);
+                    getActivity().finish();
+                }
             }
         });
 
@@ -91,6 +101,14 @@ public class GalleryFragment extends Fragment {
 
 
         return view;
+    }
+
+
+    private boolean isRootTask(){
+        if(((ShareActivity)getActivity()).getTask() == 0){
+            return true;
+        }else
+            return false;
     }
 
     private void init(){

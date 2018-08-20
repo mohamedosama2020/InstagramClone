@@ -71,7 +71,7 @@ public class NextActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: Attemping To Upload new Photo ");
                 //Upload The Image To The FireBase
                 String caption = mCaption.getText().toString();
-                mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption , imgCount , imgUrl);
+                mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption , imgCount , imgUrl,null);
             }
         });
 
@@ -81,32 +81,7 @@ public class NextActivity extends AppCompatActivity {
     }
 
 
-    private void someMethod(){
-        /*
-            Step 1:
-            Create Datamodel For Photos
 
-            Step2:
-            Add Properties to the photo Objects (caption , date , imageURL , photo_id , tags , user_id)
-
-            Step 3:
-            Count The Number Of Photos that the user already has
-
-            Step 4:
-            a)Upload The Photos To Firebase Storage
-            b)  insert the new "photos" node
-            c)  insert the new "user_photos" node
-
-
-
-         */
-        //Create Datamodel For Photos
-    }
-
-
-    /**
-     * Gets The Img Url From The Incoming Intent and displays the chosen image
-     */
     private void setImage(){
         Intent intent= getIntent();
         ImageView image = findViewById(R.id.imageShare);
