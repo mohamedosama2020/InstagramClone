@@ -1,6 +1,7 @@
 package tabian.com.instagramclone.Share;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,6 +43,8 @@ public class NextActivity extends AppCompatActivity {
     private String mAppend = "file://";
     private int imgCount = 0;
     private String imgUrl;
+    private Bitmap bitmap;
+    private Intent intent;
 
 
     @Override
@@ -71,7 +74,18 @@ public class NextActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: Attemping To Upload new Photo ");
                 //Upload The Image To The FireBase
                 String caption = mCaption.getText().toString();
-                mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption , imgCount , imgUrl,null);
+
+                if(intent.hasExtra(getString(R.string.selected_image))){
+
+                    imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption , imgCount , imgUrl,null);
+
+                }else if (intent.hasExtra(getString(R.string.selected_bitmap))){
+
+                    bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption , imgCount , null,bitmap);
+
+                }
             }
         });
 
@@ -83,10 +97,22 @@ public class NextActivity extends AppCompatActivity {
 
 
     private void setImage(){
-        Intent intent= getIntent();
+        intent= getIntent();
         ImageView image = findViewById(R.id.imageShare);
-        imgUrl = intent.getStringExtra(getString(R.string.selected_image));
-        Glide.with(this).load(imgUrl).into(image);
+
+        if(intent.hasExtra(getString(R.string.selected_image))){
+
+            imgUrl = intent.getStringExtra(getString(R.string.selected_image));
+            Log.d(TAG, "setImage: got new image url " + imgUrl);
+            Glide.with(getApplication()).load(imgUrl).into(image);
+
+        }else if (intent.hasExtra(getString(R.string.selected_bitmap))){
+
+            bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
+            Log.d(TAG, "setImage: got new bitmap ");
+            image.setImageBitmap(bitmap);
+
+        }
     }
 
 

@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,11 +27,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import tabian.com.instagramclone.Login.LoginActivity;
+import tabian.com.instagramclone.Models.Photo;
 import tabian.com.instagramclone.Models.User;
 import tabian.com.instagramclone.Models.UserAccountSettings;
 import tabian.com.instagramclone.Models.UserSettings;
@@ -38,10 +43,13 @@ import tabian.com.instagramclone.R;
 import tabian.com.instagramclone.Utils.BottomNavigationViewEx;
 import tabian.com.instagramclone.Utils.BottomNavigationViewHelper;
 import tabian.com.instagramclone.Utils.FirebaseMethods;
+import tabian.com.instagramclone.Utils.ImageAdapter;
 
 public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
     private static final int ACTIVITY_NUM = 4;
+    private static final int NUM_GRID_COLUMNS = 3;
+
 
     //fierbase
     private FirebaseAuth mAuth;
@@ -86,6 +94,7 @@ public class ProfileFragment extends Fragment {
                  Intent intent = new Intent(getActivity(),AccountSettingsActivity.class);
                  intent.putExtra(getString(R.string.calling_activity),getString(R.string.profile_fragment));
                  startActivity(intent);
+                 getActivity().overridePendingTransition(R.anim.fade_in , R.anim.fade_out);
              }
          });
 
@@ -95,9 +104,47 @@ public class ProfileFragment extends Fragment {
          setupBottomNavigationView();
          setupToolbar();
          setupFirebaseAuth();
+         setupGridView();
 
 
          return view;
+    }
+
+
+    private void setupGridView(){
+
+        Log.d(TAG, "setupGridView: setting up image grid");
+        final ArrayList<Photo> photos = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child(getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot singleSnapshot : dataSnapshot.getChildren()){
+
+                    photos.add(singleSnapshot.getValue(Photo.class));
+                }
+                //setup our Image Grid
+                int gridWidth = getResources().getDisplayMetrics().widthPixels;
+                int imageWidth = gridWidth/NUM_GRID_COLUMNS;
+                gridView.setColumnWidth(imageWidth);
+
+                ArrayList<String> imgUrls = new ArrayList<>();
+                for(int i=0;i<photos.size();i++){
+                    imgUrls.add(photos.get(i).getImage_path());
+                }
+                ImageAdapter adapter = new ImageAdapter(getActivity(),imgUrls,"");
+                gridView.setAdapter(adapter);
+                
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: query cancelled");
+
+            }
+        });
     }
 
     private void setProfileWidgets(UserSettings userSettings){
@@ -125,7 +172,7 @@ public class ProfileFragment extends Fragment {
     private void setupBottomNavigationView(){
         Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
-        BottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationView);
+        BottomNavigationViewHelper.enableNavigation(mContext,getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
