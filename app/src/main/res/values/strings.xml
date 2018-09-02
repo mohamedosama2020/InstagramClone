@@ -18,6 +18,7 @@
 
     <!-- fragment names -->
     <string name="edit_profile_fragment">EditProfileFragment</string>
+    <string name="view_post_fragment">View Post</string>
     <string name="sign_out_fragment">SignOutFragment</string>
     <string name="profile_fragment">Profile</string>
 
@@ -34,6 +35,18 @@
     <string name="selected_image">selected_image</string>
     <string name="return_to_fragment">return_to_fragment</string>
     <string name="selected_bitmap">selected_bitmap</string>
+
+    <!-- strings -->
+    <string name="gallery">GALLERY</string>
+    <string name="photo">PHOTO</string>
+    <string name="string_open_camera">Open Camera</string>
+    <string name="string_next">Next</string>
+    <string name="string_share">Share</string>
+
+    <!-- Bundle arg names -->
+    <string name="activity_number">activity_number</string>
+
+
 
 
 
